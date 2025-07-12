@@ -1,0 +1,63 @@
+import { useEffect, useState } from "react";
+import { load, save } from "../utils/storage";
+import { toast } from "react-toastify";
+
+const STORAGE_KEY = "players";
+
+export default function usePlayers() {
+  const [savedPlayers, setSavedPlayers] = useState([]);
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
+
+  useEffect(() => {
+    setSavedPlayers(load(STORAGE_KEY));
+  }, []);
+
+  const toggleSelection = (player) => {
+    const exists = selectedPlayers.some((p) => p.name === player.name);
+    if (exists) {
+      setSelectedPlayers(selectedPlayers.filter((p) => p.name !== player.name));
+    } else {
+      setSelectedPlayers([...selectedPlayers, player]);
+    }
+  };
+
+  const addPlayer = (name, photo = "") => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+
+    const exists = savedPlayers.some(
+      (p) => p.name.toLowerCase() === trimmed.toLowerCase()
+    );
+    if (exists) {
+      toast.warning("Player already exists.");
+      return;
+    }
+
+    const newPlayer = { name: trimmed, photo };
+    const updatedSaved = [...savedPlayers, newPlayer];
+
+    save(STORAGE_KEY, updatedSaved);
+    setSavedPlayers(updatedSaved);
+    setSelectedPlayers([...selectedPlayers, newPlayer]);
+    toast.success("Player added!");
+  };
+
+  const deletePlayer = (index) => {
+    const updated = [...savedPlayers];
+    const removed = updated.splice(index, 1)[0];
+    save(STORAGE_KEY, updated);
+    setSavedPlayers(updated);
+    setSelectedPlayers(
+      selectedPlayers.filter((p) => p.name !== removed.name)
+    );
+  };
+
+  return {
+    savedPlayers,
+    selectedPlayers,
+    toggleSelection,
+    addPlayer,
+    deletePlayer,
+    setSelectedPlayers,
+  };
+}

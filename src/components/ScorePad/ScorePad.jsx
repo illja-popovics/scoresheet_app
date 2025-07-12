@@ -1,60 +1,16 @@
-import React, { useState } from "react";
-import { load, save } from "../../utils/storage";
-
-import { toast } from 'react-toastify';
-
-
-const STORAGE_KEY = "gameResults";
+import React from "react";
+import useScorePad from "../../hooks/useScorePad";
+import styles from "./ScorePad.module.css";
 
 const ScorePad = ({ game, players, onBack }) => {
-  const [rounds, setRounds] = useState([Array(players.length).fill("")]);
-
-  const addRound = () => {
-    setRounds([...rounds, Array(players.length).fill("")]);
-  };
-
-  const deleteRound = (index) => {
-    if (window.confirm("Delete this round?")) {
-      const updated = [...rounds];
-      updated.splice(index, 1);
-      setRounds(updated);
-    }
-  };
-
-  const updateScore = (roundIndex, playerIndex, value) => {
-    const updated = [...rounds];
-    updated[roundIndex][playerIndex] = value === "" ? "" : parseInt(value);
-    setRounds(updated);
-  };
-
-  const totals = players.map((_, i) =>
-    rounds.reduce((sum, round) => {
-      const val = round[i];
-      return sum + (typeof val === "number" ? val : 0);
-    }, 0)
-  );
-
-  const saveGameResults = () => {
-    const isEmpty = rounds.every(round =>
-      round.every(cell => cell === "" || isNaN(cell))
-    );
-
-    if (isEmpty) {
-      toast.error("You must enter at least one score before saving.");
-      return;
-    }
-
-    const existing = load(STORAGE_KEY, []);
-    const entry = {
-      game: game.name,
-      players,
-      rounds,
-      totals,
-      date: new Date().toISOString(),
-    };
-    save(STORAGE_KEY, [...existing, entry]);
-    toast.success("Game results saved!");
-  };
+  const {
+    rounds,
+    totals,
+    addRound,
+    deleteRound,
+    updateScore,
+    saveResults,
+  } = useScorePad(players, game.name);
 
   return (
     <div>
@@ -74,16 +30,13 @@ const ScorePad = ({ game, players, onBack }) => {
               <td>
                 {roundIndex + 1}
                 <button
-                  onClick={() => deleteRound(roundIndex)}
-                  title="Delete round"
-                  style={{
-                    marginLeft: "6px",
-                    color: "red",
-                    cursor: "pointer",
-                    border: "none",
-                    background: "none",
-                    fontSize: "14px",
+                  onClick={() => {
+                    if (window.confirm("Delete this round?")) {
+                      deleteRound(roundIndex);
+                    }
                   }}
+                  title="Delete round"
+                  className={styles.deleteButton}
                 >
                   ❌
                 </button>
@@ -97,29 +50,31 @@ const ScorePad = ({ game, players, onBack }) => {
                     onChange={(e) =>
                       updateScore(roundIndex, playerIndex, e.target.value)
                     }
-                    style={{ width: "60px" }}
+                    className={styles.inputCell}
                   />
                 </td>
               ))}
             </tr>
           ))}
           <tr>
-            <td><strong>Total</strong></td>
+            <td>
+              <strong>Total</strong>
+            </td>
             {totals.map((t, i) => (
-              <td key={i}><strong>{t}</strong></td>
+              <td key={i}>
+                <strong>{t}</strong>
+              </td>
             ))}
           </tr>
         </tbody>
       </table>
 
-      <div style={{ marginTop: "16px" }}>
-        <button onClick={addRound} style={{ marginRight: "10px" }}>
+      <div className={styles.controls}>
+        <button onClick={addRound} className={styles.buttonSpacing}>
           Add Round
         </button>
-        <button onClick={saveGameResults}>
-          Save Game Results
-        </button>
-        <button onClick={onBack} style={{ marginLeft: "10px" }}>
+        <button onClick={saveResults}>Save Game Results</button>
+        <button onClick={onBack} className={styles.backButton}>
           ⬅️ Back
         </button>
       </div>

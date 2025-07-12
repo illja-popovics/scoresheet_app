@@ -17,3 +17,17 @@ button {
   min-height: 44px;
 }
 
+input[type="checkbox"] {
+  transform: scale(2);
+  /* Adjust size */
+  margin-right: 15px;
+  /* Optional: spacing between box and label */
+  cursor: pointer;
+  vertical-align: middle;
+
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}

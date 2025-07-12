@@ -1,59 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { load, save } from "../../utils/storage";
-
-import { toast } from 'react-toastify';
-
-const LOCAL_STORAGE_KEY = "players";
+import React, { useState } from "react";
+import usePlayers from "../../hooks/usePlayers";
+import styles from "./PlayerSelector.module.css";
 
 const PlayerSelector = ({ onConfirm, onBack }) => {
-  const [savedPlayers, setSavedPlayers] = useState([]);
-  const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const {
+    savedPlayers,
+    selectedPlayers,
+    toggleSelection,
+    addPlayer,
+    deletePlayer,
+    setSelectedPlayers
+  } = usePlayers();
+
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState("");
 
-  useEffect(() => {
-    setSavedPlayers(load(LOCAL_STORAGE_KEY));
-  }, []);
-
-  const togglePlayerSelection = (player) => {
-    const exists = selectedPlayers.find((p) => p.name === player.name);
-    if (exists) {
-      setSelectedPlayers(
-        selectedPlayers.filter((p) => p.name !== player.name)
-      );
-    } else {
-      setSelectedPlayers([...selectedPlayers, player]);
-    }
-  };
-
-  const addPlayer = () => {
-    if (!name.trim()) return;
-    const newPlayer = { name: name.trim(), photo };
-
-    const exists = savedPlayers.some(
-      (p) => p.name.toLowerCase() === name.toLowerCase()
-    );
-    const updatedSaved = exists ? savedPlayers : [...savedPlayers, newPlayer];
-
-    save(LOCAL_STORAGE_KEY, updatedSaved);
-    setSavedPlayers(updatedSaved);
-    setSelectedPlayers([...selectedPlayers, newPlayer]);
+  const handleAdd = () => {
+    addPlayer(name, photo);
     setName("");
     setPhoto("");
-    toast.success("Player added!");
-
-  };
-
-  const deletePlayer = (index) => {
-    if (window.confirm("Delete this player?")) {
-      const updated = [...savedPlayers];
-      const removed = updated.splice(index, 1)[0];
-      setSavedPlayers(updated);
-      save(LOCAL_STORAGE_KEY, updated);
-      setSelectedPlayers(
-        selectedPlayers.filter((p) => p.name !== removed.name)
-      );
-    }
   };
 
   return (
@@ -61,27 +26,24 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
       <h2>Select or Add Players</h2>
 
       <h4>Previously Used Players:</h4>
-      <ul>
+      <ul className={styles.playerList}>
         {savedPlayers.map((p, i) => (
-          <li key={i}>
+          <li key={i} className={styles.playerItem}>
             <label>
               <input
                 type="checkbox"
+                className={styles.checkbox}
                 checked={!!selectedPlayers.find((sel) => sel.name === p.name)}
-                onChange={() => togglePlayerSelection(p)}
+                onChange={() => toggleSelection(p)}
               />
               {p.name}
             </label>
             <button
-              onClick={() => deletePlayer(i)}
-              title="Delete Player"
-              style={{
-                marginLeft: "10px",
-                color: "red",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
+              onClick={() => {
+                if (window.confirm("Delete this player?")) deletePlayer(i);
               }}
+              title="Delete Player"
+              className={styles.deleteButton}
             >
               🗑️
             </button>
@@ -95,12 +57,12 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <input
+      {/* <input
         placeholder="Photo URL (optional)"
         value={photo}
         onChange={(e) => setPhoto(e.target.value)}
-      />
-      <button onClick={addPlayer}>Add Player</button>
+      /> */}
+      <button onClick={handleAdd}>Add Player</button>
 
       <hr />
       <button

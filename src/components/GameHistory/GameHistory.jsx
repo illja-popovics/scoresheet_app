@@ -1,30 +1,16 @@
-// src/components/GameHistory/GameHistory.jsx
-import React, { useState, useEffect } from "react";
-import { load, save } from "../../utils/storage";
-
-const STORAGE_KEY = "gameResults";
+import React from "react";
+import useGameHistory from "../../hooks/useGameHistory";
+import styles from "./GameHistory.module.css";
 
 const GameHistory = () => {
-  const [history, setHistory] = useState([]);
-
-  useEffect(() => {
-    const saved = load(STORAGE_KEY, []);
-    setHistory(saved.reverse()); // newest first
-  }, []);
-
-  const deleteHistoryItem = (index) => {
-    const updated = [...history];
-    updated.splice(index, 1);
-    save(STORAGE_KEY, [...updated].reverse()); // reverse back before saving
-    setHistory(updated);
-  };
+  const { history, deleteHistoryItem } = useGameHistory();
 
   if (history.length === 0) {
     return <p>No saved game history yet.</p>;
   }
 
   return (
-    <div style={{ marginTop: "20px" }}>
+    <div className={styles.container}>
       <h3>Game History</h3>
       <table border="1" cellPadding="6" cellSpacing="0">
         <thead>
@@ -47,12 +33,7 @@ const GameHistory = () => {
                 <button
                   onClick={() => deleteHistoryItem(i)}
                   title="Delete entry"
-                  style={{
-                    color: "red",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
+                  className={styles.deleteButton}
                 >
                   🗑️
                 </button>

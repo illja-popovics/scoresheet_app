@@ -1,1 +1,25 @@
+.playerList {
+    list-style-type: none;
+    padding-left: 0;
+}
 
+.playerItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.checkbox {
+    transform: scale(1.4);
+    margin-right: 8px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.deleteButton {
+    margin-left: 10px;
+    color: red;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
