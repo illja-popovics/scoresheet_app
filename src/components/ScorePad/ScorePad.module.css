@@ -22,3 +22,7 @@
 .backButton {
     margin-left: 10px;
 }
+
+.roundNameInput {
+    width: 100px;
+}
