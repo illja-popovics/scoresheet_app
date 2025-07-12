@@ -47,6 +47,5 @@ select {
   color: inherit;
   -webkit-text-fill-color: inherit;
   /* Safari-specific fix */
-  -webkit-appearance: none;
-  /* Prevents native styling */
+
 }
