@@ -3,21 +3,22 @@ import { load, save } from "../../utils/storage";
 
 const LOCAL_STORAGE_KEY = "players";
 
-const PlayerSelector = ({ onConfirm }) => {
+const PlayerSelector = ({ onConfirm, onBack }) => {
   const [savedPlayers, setSavedPlayers] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState("");
 
-  // Load saved players on mount
   useEffect(() => {
     setSavedPlayers(load(LOCAL_STORAGE_KEY));
   }, []);
 
   const togglePlayerSelection = (player) => {
-    const exists = selectedPlayers.find(p => p.name === player.name);
+    const exists = selectedPlayers.find((p) => p.name === player.name);
     if (exists) {
-      setSelectedPlayers(selectedPlayers.filter(p => p.name !== player.name));
+      setSelectedPlayers(
+        selectedPlayers.filter((p) => p.name !== player.name)
+      );
     } else {
       setSelectedPlayers([...selectedPlayers, player]);
     }
@@ -25,10 +26,11 @@ const PlayerSelector = ({ onConfirm }) => {
 
   const addPlayer = () => {
     if (!name.trim()) return;
-    const newPlayer = { name, photo };
+    const newPlayer = { name: name.trim(), photo };
 
-    // Avoid duplicates
-    const exists = savedPlayers.some(p => p.name === name);
+    const exists = savedPlayers.some(
+      (p) => p.name.toLowerCase() === name.toLowerCase()
+    );
     const updatedSaved = exists ? savedPlayers : [...savedPlayers, newPlayer];
 
     save(LOCAL_STORAGE_KEY, updatedSaved);
@@ -38,11 +40,22 @@ const PlayerSelector = ({ onConfirm }) => {
     setPhoto("");
   };
 
+  const deletePlayer = (index) => {
+    if (window.confirm("Delete this player?")) {
+      const updated = [...savedPlayers];
+      const removed = updated.splice(index, 1)[0];
+      setSavedPlayers(updated);
+      save(LOCAL_STORAGE_KEY, updated);
+      setSelectedPlayers(
+        selectedPlayers.filter((p) => p.name !== removed.name)
+      );
+    }
+  };
+
   return (
     <div>
       <h2>Select or Add Players</h2>
 
-      {/* Saved players list */}
       <h4>Previously Used Players:</h4>
       <ul>
         {savedPlayers.map((p, i) => (
@@ -50,16 +63,28 @@ const PlayerSelector = ({ onConfirm }) => {
             <label>
               <input
                 type="checkbox"
-                checked={!!selectedPlayers.find(sel => sel.name === p.name)}
+                checked={!!selectedPlayers.find((sel) => sel.name === p.name)}
                 onChange={() => togglePlayerSelection(p)}
               />
               {p.name}
             </label>
+            <button
+              onClick={() => deletePlayer(i)}
+              title="Delete Player"
+              style={{
+                marginLeft: "10px",
+                color: "red",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              🗑️
+            </button>
           </li>
         ))}
       </ul>
 
-      {/* New player form */}
       <h4>Add New Player:</h4>
       <input
         placeholder="Name"
@@ -79,6 +104,9 @@ const PlayerSelector = ({ onConfirm }) => {
         disabled={selectedPlayers.length === 0}
       >
         Confirm Players
+      </button>
+      <button onClick={onBack} style={{ marginLeft: "10px" }}>
+        ⬅️ Back
       </button>
     </div>
   );

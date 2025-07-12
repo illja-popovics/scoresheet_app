@@ -10,6 +10,16 @@ function App() {
   const [players, setPlayers] = useState([]);
   const [showHistory, setShowHistory] = useState(false); // ✅ new
 
+  const goBack = () => {
+    if (step === "players") {
+      setStep("game");
+      setGame(null);
+    } else if (step === "score") {
+      setStep("players");
+      setPlayers([]);
+    }
+  };
+
   const handleSelectGame = (selectedGame) => {
     setGame(selectedGame);
     setStep("players");
@@ -23,8 +33,12 @@ function App() {
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
       {step === "game" && <GameSelector onSelect={handleSelectGame} />}
-      {step === "players" && <PlayerSelector onConfirm={handleConfirmPlayers} />}
-      {step === "score" && <ScorePad game={game} players={players} />}
+      {step === "players" && (
+  <PlayerSelector onConfirm={handleConfirmPlayers} onBack={goBack} />
+)}
+{step === "score" && (
+  <ScorePad game={game} players={players} onBack={goBack} />
+)}
 
       <div style={{ marginTop: "30px", textAlign: "center" }}>
         <button onClick={() => setShowHistory(!showHistory)}>

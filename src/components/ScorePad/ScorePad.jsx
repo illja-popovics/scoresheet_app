@@ -3,7 +3,7 @@ import { load, save } from "../../utils/storage";
 
 const STORAGE_KEY = "gameResults";
 
-const ScorePad = ({ game, players }) => {
+const ScorePad = ({ game, players, onBack }) => {
   const [rounds, setRounds] = useState([Array(players.length).fill("")]);
 
   const addRound = () => {
@@ -11,9 +11,11 @@ const ScorePad = ({ game, players }) => {
   };
 
   const deleteRound = (index) => {
-    const updated = [...rounds];
-    updated.splice(index, 1);
-    setRounds(updated);
+    if (window.confirm("Delete this round?")) {
+      const updated = [...rounds];
+      updated.splice(index, 1);
+      setRounds(updated);
+    }
   };
 
   const updateScore = (roundIndex, playerIndex, value) => {
@@ -30,6 +32,15 @@ const ScorePad = ({ game, players }) => {
   );
 
   const saveGameResults = () => {
+    const isEmpty = rounds.every(round =>
+      round.every(cell => cell === "" || isNaN(cell))
+    );
+
+    if (isEmpty) {
+      alert("You must enter at least one score before saving.");
+      return;
+    }
+
     const existing = load(STORAGE_KEY, []);
     const entry = {
       game: game.name,
@@ -58,7 +69,7 @@ const ScorePad = ({ game, players }) => {
           {rounds.map((round, roundIndex) => (
             <tr key={roundIndex}>
               <td>
-                {roundIndex + 1}{" "}
+                {roundIndex + 1}
                 <button
                   onClick={() => deleteRound(roundIndex)}
                   title="Delete round"
@@ -104,6 +115,9 @@ const ScorePad = ({ game, players }) => {
         </button>
         <button onClick={saveGameResults}>
           Save Game Results
+        </button>
+        <button onClick={onBack} style={{ marginLeft: "10px" }}>
+          ⬅️ Back
         </button>
       </div>
     </div>

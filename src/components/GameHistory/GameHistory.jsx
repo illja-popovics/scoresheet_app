@@ -1,6 +1,6 @@
 // src/components/GameHistory/GameHistory.jsx
 import React, { useState, useEffect } from "react";
-import { load } from "../../utils/storage";
+import { load, save } from "../../utils/storage";
 
 const STORAGE_KEY = "gameResults";
 
@@ -11,6 +11,13 @@ const GameHistory = () => {
     const saved = load(STORAGE_KEY, []);
     setHistory(saved.reverse()); // newest first
   }, []);
+
+  const deleteHistoryItem = (index) => {
+    const updated = [...history];
+    updated.splice(index, 1);
+    save(STORAGE_KEY, [...updated].reverse()); // reverse back before saving
+    setHistory(updated);
+  };
 
   if (history.length === 0) {
     return <p>No saved game history yet.</p>;
@@ -26,6 +33,7 @@ const GameHistory = () => {
             <th>Game</th>
             <th>Players</th>
             <th>Totals</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -33,11 +41,21 @@ const GameHistory = () => {
             <tr key={i}>
               <td>{new Date(entry.date).toLocaleString()}</td>
               <td>{entry.game}</td>
+              <td>{entry.players.map((p) => p.name).join(", ")}</td>
+              <td>{entry.totals.join(" / ")}</td>
               <td>
-                {entry.players.map((p) => p.name).join(", ")}
-              </td>
-              <td>
-                {entry.totals.join(" / ")}
+                <button
+                  onClick={() => deleteHistoryItem(i)}
+                  title="Delete entry"
+                  style={{
+                    color: "red",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  🗑️
+                </button>
               </td>
             </tr>
           ))}
