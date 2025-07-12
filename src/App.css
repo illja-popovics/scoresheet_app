@@ -35,3 +35,18 @@ ul {
 .history-toggle {
   margin-top: 30px;
 }
+
+.app-container {
+
+}
+
+input,
+textarea,
+button,
+select {
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  /* Safari-specific fix */
+  -webkit-appearance: none;
+  /* Prevents native styling */
+}
