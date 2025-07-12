@@ -46,3 +46,7 @@
     cursor: pointer;
     vertical-align: middle;
 }
+
+.addButton {
+    margin-left: 20px;
+}

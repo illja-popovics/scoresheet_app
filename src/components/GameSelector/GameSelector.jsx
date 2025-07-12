@@ -41,7 +41,7 @@ const GameSelector = ({ onSelect }) => {
         onChange={(e) => setNewGame(e.target.value)}
         placeholder="New game name"
       />
-      <button onClick={handleAddGame}>Add Game</button>
+      <button className={styles.addButton} onClick={handleAddGame}>Add Game</button>
     </div>
   );
 };

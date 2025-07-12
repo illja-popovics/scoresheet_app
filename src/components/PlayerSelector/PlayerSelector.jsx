@@ -58,7 +58,7 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <button onClick={handleAdd}>Add Player</button>
+      <button className={styles.addButton} onClick={handleAdd}>Add Player</button>
 
       <hr />
 
