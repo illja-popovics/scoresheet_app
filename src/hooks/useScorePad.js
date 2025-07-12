@@ -4,11 +4,19 @@ import { toast } from "react-toastify";
 
 const STORAGE_KEY = "gameResults";
 
-export default function useScorePad(players, gameName) {
-  const [rounds, setRounds] = useState([Array(players.length).fill("")]);
+export default function useScorePad(players, gameName, roundType = "numbered") {
+  // Initialize based on round type
+  const initialRound = roundType === "named"
+    ? { name: "", scores: Array(players.length).fill("") }
+    : Array(players.length).fill("");
+
+  const [rounds, setRounds] = useState([initialRound]);
 
   const addRound = () => {
-    setRounds((prev) => [...prev, Array(players.length).fill("")]);
+    const newRound = roundType === "named"
+      ? { name: "", scores: Array(players.length).fill("") }
+      : Array(players.length).fill("");
+    setRounds(prev => [...prev, newRound]);
   };
 
   const deleteRound = (index) => {
@@ -19,20 +27,34 @@ export default function useScorePad(players, gameName) {
 
   const updateScore = (roundIndex, playerIndex, value) => {
     const updated = [...rounds];
-    updated[roundIndex][playerIndex] = value === "" ? "" : parseInt(value);
+    if (roundType === "named") {
+      updated[roundIndex].scores[playerIndex] = value === "" ? "" : parseInt(value);
+    } else {
+      updated[roundIndex][playerIndex] = value === "" ? "" : parseInt(value);
+    }
+    setRounds(updated);
+  };
+
+  const updateRoundName = (roundIndex, newName) => {
+    if (roundType !== "named") return;
+    const updated = [...rounds];
+    updated[roundIndex].name = newName;
     setRounds(updated);
   };
 
   const totals = players.map((_, i) =>
     rounds.reduce((sum, round) => {
-      const val = round[i];
+      const val = roundType === "named" ? round.scores[i] : round[i];
       return sum + (typeof val === "number" ? val : 0);
     }, 0)
   );
 
   const saveResults = () => {
-    const isEmpty = rounds.every((round) =>
-      round.every((cell) => cell === "" || isNaN(cell))
+    const isEmpty = rounds.every(round =>
+      (roundType === "named"
+        ? round.scores
+        : round
+      ).every(cell => cell === "" || isNaN(cell))
     );
 
     if (isEmpty) {
@@ -40,15 +62,16 @@ export default function useScorePad(players, gameName) {
       return;
     }
 
-    const existing = load(STORAGE_KEY, []);
     const entry = {
       game: gameName,
       players,
       rounds,
       totals,
+      roundType,
       date: new Date().toISOString(),
     };
 
+    const existing = load(STORAGE_KEY, []);
     save(STORAGE_KEY, [...existing, entry]);
     toast.success("Game results saved!");
   };
@@ -59,6 +82,7 @@ export default function useScorePad(players, gameName) {
     addRound,
     deleteRound,
     updateScore,
+    updateRoundName,
     saveResults,
   };
 }

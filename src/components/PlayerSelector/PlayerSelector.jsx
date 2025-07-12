@@ -14,6 +14,7 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
 
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState("");
+  const [roundType, setRoundType] = useState("numbered");
 
   const handleAdd = () => {
     addPlayer(name, photo);
@@ -57,16 +58,39 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      {/* <input
-        placeholder="Photo URL (optional)"
-        value={photo}
-        onChange={(e) => setPhoto(e.target.value)}
-      /> */}
       <button onClick={handleAdd}>Add Player</button>
 
       <hr />
+
+      <div>
+  <h4>Round Label Type:</h4>
+  <div className={styles.radioGroup}>
+    <label className={styles.radioLabel}>
+      <input
+        type="radio"
+        className={styles.radioInput}
+        value="numbered"
+        checked={roundType === "numbered"}
+        onChange={() => setRoundType("numbered")}
+      />
+      Numbered Rounds
+    </label>
+    <label className={styles.radioLabel}>
+      <input
+        type="radio"
+        className={styles.radioInput}
+        value="named"
+        checked={roundType === "named"}
+        onChange={() => setRoundType("named")}
+      />
+      Named Rounds
+    </label>
+  </div>
+</div>
+
+
       <button
-        onClick={() => onConfirm(selectedPlayers)}
+        onClick={() => onConfirm(selectedPlayers, roundType)}
         disabled={selectedPlayers.length === 0}
       >
         Confirm Players

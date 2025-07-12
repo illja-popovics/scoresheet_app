@@ -2,15 +2,16 @@ import React from "react";
 import useScorePad from "../../hooks/useScorePad";
 import styles from "./ScorePad.module.css";
 
-const ScorePad = ({ game, players, onBack }) => {
+const ScorePad = ({ game, players, roundType, onBack }) => {
   const {
     rounds,
     totals,
     addRound,
     deleteRound,
     updateScore,
+    updateRoundName, // ✅ support round name editing
     saveResults,
-  } = useScorePad(players, game.name);
+  } = useScorePad(players, game.name, roundType);
 
   return (
     <div>
@@ -18,7 +19,7 @@ const ScorePad = ({ game, players, onBack }) => {
       <table border="1" cellPadding="8">
         <thead>
           <tr>
-            <th>Round</th>
+            <th>{roundType === "named" ? "Round Name" : "Round"}</th>
             {players.map((p, i) => (
               <th key={i}>{p.name}</th>
             ))}
@@ -28,7 +29,19 @@ const ScorePad = ({ game, players, onBack }) => {
           {rounds.map((round, roundIndex) => (
             <tr key={roundIndex}>
               <td>
-                {roundIndex + 1}
+                {roundType === "named" ? (
+                  <input
+                    type="text"
+                    value={round.name}
+                    onChange={(e) => updateRoundName(roundIndex, e.target.value)}
+                    placeholder={`Round ${roundIndex + 1}`}
+                    className={styles.roundNameInput}
+                  />
+                ) : (
+                  <>
+                    {roundIndex + 1}
+                  </>
+                )}
                 <button
                   onClick={() => {
                     if (window.confirm("Delete this round?")) {
@@ -41,7 +54,7 @@ const ScorePad = ({ game, players, onBack }) => {
                   ❌
                 </button>
               </td>
-              {round.map((score, playerIndex) => (
+              {round.scores.map((score, playerIndex) => (
                 <td key={playerIndex}>
                   <input
                     type="number"
@@ -75,19 +88,17 @@ const ScorePad = ({ game, players, onBack }) => {
         </button>
         <button onClick={saveResults}>Save Game Results</button>
         <button
-  onClick={() => {
-    if (
-      window.confirm(
-        "Are you sure you want to go back? Unsaved scores will be lost."
-      )
-    ) {
-      onBack();
-    }
-  }}
-  className={styles.backButton}
->
-  ⬅️ Back
-</button>
+          onClick={() => {
+            if (
+              window.confirm("Are you sure you want to go back? Unsaved scores will be lost.")
+            ) {
+              onBack();
+            }
+          }}
+          className={styles.backButton}
+        >
+          ⬅️ Back
+        </button>
       </div>
     </div>
   );
