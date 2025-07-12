@@ -9,7 +9,7 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
     toggleSelection,
     addPlayer,
     deletePlayer,
-    setSelectedPlayers
+    // setSelectedPlayers
   } = usePlayers();
 
   const [name, setName] = useState("");

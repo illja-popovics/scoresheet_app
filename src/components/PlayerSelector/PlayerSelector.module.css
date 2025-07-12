@@ -40,8 +40,9 @@
 }
 
 .radioInput {
-    margin-right: 6px;
-    transform: scale(1.2);
+    margin-right: 15px;
+    transform: scale(2.5);
     /* Makes radio slightly bigger */
     cursor: pointer;
+    vertical-align: middle;
 }
