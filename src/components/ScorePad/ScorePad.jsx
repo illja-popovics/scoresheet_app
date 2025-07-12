@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { load, save } from "../../utils/storage";
 
+import { toast } from 'react-toastify';
+
+
 const STORAGE_KEY = "gameResults";
 
 const ScorePad = ({ game, players, onBack }) => {
@@ -37,7 +40,7 @@ const ScorePad = ({ game, players, onBack }) => {
     );
 
     if (isEmpty) {
-      alert("You must enter at least one score before saving.");
+      toast.error("You must enter at least one score before saving.");
       return;
     }
 
@@ -50,7 +53,7 @@ const ScorePad = ({ game, players, onBack }) => {
       date: new Date().toISOString(),
     };
     save(STORAGE_KEY, [...existing, entry]);
-    alert("Game results saved!");
+    toast.success("Game results saved!");
   };
 
   return (

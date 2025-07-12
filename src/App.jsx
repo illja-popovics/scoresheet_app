@@ -4,6 +4,11 @@ import PlayerSelector from "./components/PlayerSelector/PlayerSelector";
 import ScorePad from "./components/ScorePad/ScorePad";
 import GameHistory from "./components/GameHistory/GameHistory";
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 function App() {
   const [step, setStep] = useState("game");
   const [game, setGame] = useState(null);
@@ -44,9 +49,22 @@ function App() {
         <button onClick={() => setShowHistory(!showHistory)}>
           {showHistory ? "Hide" : "View"} Game History
         </button>
+        <ToastContainer
+  position="bottom-right"
+  autoClose={3000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+  theme="colored"
+/>
         {showHistory && <GameHistory />}
       </div>
     </div>
+    
+    
   );
 }
 
