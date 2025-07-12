@@ -87,8 +87,6 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
     </label>
   </div>
 </div>
-
-
       <button
         onClick={() => onConfirm(selectedPlayers, roundType)}
         disabled={selectedPlayers.length === 0}

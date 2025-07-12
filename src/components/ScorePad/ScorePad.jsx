@@ -9,7 +9,7 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
     addRound,
     deleteRound,
     updateScore,
-    updateRoundName, // ✅ support round name editing
+    updateRoundName,
     saveResults,
   } = useScorePad(players, game.name, roundType);
 
