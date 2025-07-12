@@ -74,9 +74,20 @@ const ScorePad = ({ game, players, onBack }) => {
           Add Round
         </button>
         <button onClick={saveResults}>Save Game Results</button>
-        <button onClick={onBack} className={styles.backButton}>
-          ⬅️ Back
-        </button>
+        <button
+  onClick={() => {
+    if (
+      window.confirm(
+        "Are you sure you want to go back? Unsaved scores will be lost."
+      )
+    ) {
+      onBack();
+    }
+  }}
+  className={styles.backButton}
+>
+  ⬅️ Back
+</button>
       </div>
     </div>
   );
