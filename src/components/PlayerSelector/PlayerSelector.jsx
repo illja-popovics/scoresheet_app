@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { load, save } from "../../utils/storage";
 
+import { toast } from 'react-toastify';
+
 const LOCAL_STORAGE_KEY = "players";
 
 const PlayerSelector = ({ onConfirm, onBack }) => {
@@ -38,6 +40,8 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
     setSelectedPlayers([...selectedPlayers, newPlayer]);
     setName("");
     setPhoto("");
+    toast.success("Player added!");
+
   };
 
   const deletePlayer = (index) => {

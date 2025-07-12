@@ -4,6 +4,8 @@ import PlayerSelector from "./components/PlayerSelector/PlayerSelector";
 import ScorePad from "./components/ScorePad/ScorePad";
 import GameHistory from "./components/GameHistory/GameHistory";
 
+import "./App.css"
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -36,7 +38,7 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+    <div style={{ marginLeft: "30px", padding: "20px", fontFamily: "sans-serif" }}>
       {step === "game" && <GameSelector onSelect={handleSelectGame} />}
       {step === "players" && (
   <PlayerSelector onConfirm={handleConfirmPlayers} onBack={goBack} />
