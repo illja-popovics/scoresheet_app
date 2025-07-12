@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { load, save } from "../utils/storage";
-import { toast } from "react-toastify";
+import { showError, showSuccess } from "../utils/toast";
 
 const STORAGE_KEY = "gameResults";
 
@@ -58,7 +58,7 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
     );
 
     if (isEmpty) {
-      toast.error("You must enter at least one score before saving.");
+      showError("You must enter at least one score before saving.");
       return;
     }
 
@@ -73,7 +73,7 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
 
     const existing = load(STORAGE_KEY, []);
     save(STORAGE_KEY, [...existing, entry]);
-    toast.success("Game results saved!");
+    showSuccess("Game results saved!");
   };
 
   return {

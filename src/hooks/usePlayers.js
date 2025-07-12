@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { load, save } from "../utils/storage";
-import { toast } from "react-toastify";
+import { showError, showSuccess } from "../utils/toast";
+
 
 const STORAGE_KEY = "players";
 
@@ -29,7 +30,7 @@ export default function usePlayers() {
       (p) => p.name.toLowerCase() === trimmed.toLowerCase()
     );
     if (exists) {
-      toast.warning("Player already exists.");
+      showError("Player already exists.");
       return;
     }
 
@@ -39,7 +40,7 @@ export default function usePlayers() {
     save(STORAGE_KEY, updatedSaved);
     setSavedPlayers(updatedSaved);
     setSelectedPlayers([...selectedPlayers, newPlayer]);
-    toast.success("Player added!");
+    showSuccess("Player added!");
   };
 
   const deletePlayer = (index) => {

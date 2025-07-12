@@ -13,6 +13,24 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
     saveResults,
   } = useScorePad(players, game.name, roundType);
 
+  const renderScoreCells = (round, roundIndex) => {
+    const scores = roundType === "named" ? round.scores : round;
+
+    return scores.map((score, playerIndex) => (
+      <td key={playerIndex}>
+        <input
+          type="number"
+          value={score}
+          placeholder="-"
+          onChange={(e) =>
+            updateScore(roundIndex, playerIndex, e.target.value)
+          }
+          className={styles.inputCell}
+        />
+      </td>
+    ));
+  };
+
   return (
     <div>
       <h2>Game: {game.name}</h2>
@@ -33,14 +51,14 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
                   <input
                     type="text"
                     value={round.name}
-                    onChange={(e) => updateRoundName(roundIndex, e.target.value)}
+                    onChange={(e) =>
+                      updateRoundName(roundIndex, e.target.value)
+                    }
                     placeholder={`Round ${roundIndex + 1}`}
                     className={styles.roundNameInput}
                   />
                 ) : (
-                  <>
-                    {roundIndex + 1}
-                  </>
+                  roundIndex + 1
                 )}
                 <button
                   onClick={() => {
@@ -54,19 +72,7 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
                   ❌
                 </button>
               </td>
-              {round.scores.map((score, playerIndex) => (
-                <td key={playerIndex}>
-                  <input
-                    type="number"
-                    value={score}
-                    placeholder="-"
-                    onChange={(e) =>
-                      updateScore(roundIndex, playerIndex, e.target.value)
-                    }
-                    className={styles.inputCell}
-                  />
-                </td>
-              ))}
+              {renderScoreCells(round, roundIndex)}
             </tr>
           ))}
           <tr>
@@ -90,7 +96,9 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
         <button
           onClick={() => {
             if (
-              window.confirm("Are you sure you want to go back? Unsaved scores will be lost.")
+              window.confirm(
+                "Are you sure you want to go back? Unsaved scores will be lost."
+              )
             ) {
               onBack();
             }
