@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { load, save } from "../../utils/storage"; // Assuming you're using utils
+import { load, save } from "../../utils/storage";
 
 const STORAGE_KEY = "gameResults";
 
