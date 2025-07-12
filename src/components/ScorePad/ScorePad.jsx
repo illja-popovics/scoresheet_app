@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { load, save } from "../../utils/storage"; // Assuming you're using utils
+
+const STORAGE_KEY = "gameResults";
 
 const ScorePad = ({ game, players }) => {
   const [rounds, setRounds] = useState([Array(players.length).fill("")]);
@@ -25,6 +28,19 @@ const ScorePad = ({ game, players }) => {
       return sum + (typeof val === "number" ? val : 0);
     }, 0)
   );
+
+  const saveGameResults = () => {
+    const existing = load(STORAGE_KEY, []);
+    const entry = {
+      game: game.name,
+      players,
+      rounds,
+      totals,
+      date: new Date().toISOString(),
+    };
+    save(STORAGE_KEY, [...existing, entry]);
+    alert("Game results saved!");
+  };
 
   return (
     <div>
@@ -81,7 +97,15 @@ const ScorePad = ({ game, players }) => {
           </tr>
         </tbody>
       </table>
-      <button onClick={addRound}>Add Round</button>
+
+      <div style={{ marginTop: "16px" }}>
+        <button onClick={addRound} style={{ marginRight: "10px" }}>
+          Add Round
+        </button>
+        <button onClick={saveGameResults}>
+          Save Game Results
+        </button>
+      </div>
     </div>
   );
 };
