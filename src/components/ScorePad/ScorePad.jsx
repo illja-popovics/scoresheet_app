@@ -11,6 +11,7 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
     updateScore,
     updateRoundName,
     saveResults,
+    saveAsTemplate,
   } = useScorePad(players, game.name, roundType);
 
   const renderScoreCells = (round, roundIndex) => {
@@ -92,6 +93,12 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
         <button onClick={addRound} className={styles.buttonSpacing}>
           Add Round
         </button>
+        {roundType === "named" && (
+  <button onClick={saveAsTemplate} className={styles.buttonSpacing}>
+    💾 Save Round Template
+  </button>
+)}
+
         <button onClick={saveResults}>Save Game Results</button>
         <button
           onClick={() => {

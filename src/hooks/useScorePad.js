@@ -1,16 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { load, save } from "../utils/storage";
+import { saveTemplate, loadTemplate } from "../utils/gameTemplates";
 import { showError, showSuccess } from "../utils/toast";
 
 const STORAGE_KEY = "gameResults";
 
 export default function useScorePad(players, gameName, roundType = "numbered") {
-  // Initialize based on round type
-  const initialRound = roundType === "named"
-    ? { name: "", scores: Array(players.length).fill("") }
-    : Array(players.length).fill("");
+  const [rounds, setRounds] = useState([]);
 
-  const [rounds, setRounds] = useState([initialRound]);
+  useEffect(() => {
+    if (roundType === "named") {
+      const template = loadTemplate(gameName);
+      if (template) {
+        const initial = template.map(name => ({
+          name,
+          scores: Array(players.length).fill(""),
+        }));
+        setRounds(initial);
+        return;
+      }
+    }
+
+    const initialRound = roundType === "named"
+      ? { name: "", scores: Array(players.length).fill("") }
+      : Array(players.length).fill("");
+
+    setRounds([initialRound]);
+  }, [gameName, players.length, roundType]);
 
   const addRound = () => {
     const newRound = roundType === "named"
@@ -56,12 +72,12 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
         : round
       ).every(cell => cell === "" || isNaN(cell))
     );
-  
+
     if (isEmpty) {
       showError("You must enter at least one score before saving.");
       return;
     }
-  
+
     const entry = {
       game: gameName,
       players,
@@ -70,14 +86,24 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
       roundType,
       date: new Date().toISOString(),
     };
-  
+
     const existing = load(STORAGE_KEY, []);
     save(STORAGE_KEY, [...existing, entry]);
     showSuccess("Game results saved!");
-  
     window.dispatchEvent(new Event("gameHistoryUpdated"));
   };
-  
+
+  const saveAsTemplate = () => {
+    if (roundType !== "named") return;
+    const valid = rounds.every((r) => r.name && r.name.trim() !== "");
+    if (!valid) {
+      showError("Please fill in all round names before saving as template.");
+      return;
+    }
+
+    saveTemplate(gameName, rounds);
+    showSuccess("Template saved for this game.");
+  };
 
   return {
     rounds,
@@ -87,5 +113,6 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
     updateScore,
     updateRoundName,
     saveResults,
+    saveAsTemplate, 
   };
 }
