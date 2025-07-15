@@ -6,20 +6,32 @@ const STORAGE_KEY = "gameResults";
 export default function useGameHistory() {
   const [history, setHistory] = useState([]);
 
-  useEffect(() => {
+  const reloadHistory = () => {
     const saved = load(STORAGE_KEY, []);
-    setHistory(saved.reverse());
+    setHistory(saved);
+  };
+
+  useEffect(() => {
+    reloadHistory(); // initial load
+
+    const listener = () => reloadHistory();
+    window.addEventListener("gameHistoryUpdated", listener);
+
+    return () => {
+      window.removeEventListener("gameHistoryUpdated", listener);
+    };
   }, []);
 
   const deleteHistoryItem = (index) => {
     const updated = [...history];
     updated.splice(index, 1);
-    save(STORAGE_KEY, [...updated].reverse()); // reverse before saving
     setHistory(updated);
+    save(STORAGE_KEY, updated);
   };
 
   return {
     history,
     deleteHistoryItem,
+    setHistory,
   };
 }
