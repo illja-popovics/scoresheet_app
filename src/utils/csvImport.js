@@ -4,6 +4,13 @@ import { save } from "./storage";
 const STORAGE_KEY = "gameResults";
 
 export function importGameHistoryFromCSV(file, onImportComplete) {
+
+  const confirmed = window.confirm(
+    "Importing this CSV will overwrite all existing saved game history. Do you want to continue?"
+  );
+
+  if (!confirmed) return;
+
   Papa.parse(file, {
     header: true,
     skipEmptyLines: true,
