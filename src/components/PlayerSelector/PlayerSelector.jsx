@@ -9,7 +9,7 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
     toggleSelection,
     addPlayer,
     deletePlayer,
-    // setSelectedPlayers
+    validateSelection,
   } = usePlayers();
 
   const [name, setName] = useState("");
@@ -20,6 +20,11 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
     addPlayer(name, photo);
     setName("");
     setPhoto("");
+  };
+
+  const handleConfirm = () => {
+    if (!validateSelection()) return;
+    onConfirm(selectedPlayers, roundType);
   };
 
   return (
@@ -63,34 +68,32 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
       <hr />
 
       <div>
-  <h4>Round Label Type:</h4>
-  <div className={styles.radioGroup}>
-    <label className={styles.radioLabel}>
-      <input
-        type="radio"
-        className={styles.radioInput}
-        value="numbered"
-        checked={roundType === "numbered"}
-        onChange={() => setRoundType("numbered")}
-      />
-      Numbered Rounds
-    </label>
-    <label className={styles.radioLabel}>
-      <input
-        type="radio"
-        className={styles.radioInput}
-        value="named"
-        checked={roundType === "named"}
-        onChange={() => setRoundType("named")}
-      />
-      Named Rounds
-    </label>
-  </div>
-</div>
-      <button
-        onClick={() => onConfirm(selectedPlayers, roundType)}
-        disabled={selectedPlayers.length === 0}
-      >
+        <h4>Round Label Type:</h4>
+        <div className={styles.radioGroup}>
+          <label className={styles.radioLabel}>
+            <input
+              type="radio"
+              className={styles.radioInput}
+              value="numbered"
+              checked={roundType === "numbered"}
+              onChange={() => setRoundType("numbered")}
+            />
+            Numbered Rounds
+          </label>
+          <label className={styles.radioLabel}>
+            <input
+              type="radio"
+              className={styles.radioInput}
+              value="named"
+              checked={roundType === "named"}
+              onChange={() => setRoundType("named")}
+            />
+            Named Rounds
+          </label>
+        </div>
+      </div>
+
+      <button onClick={handleConfirm}>
         Confirm Players
       </button>
       <button onClick={onBack} style={{ marginLeft: "10px" }}>

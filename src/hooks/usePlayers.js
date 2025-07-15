@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { load, save } from "../utils/storage";
 import { showError, showSuccess } from "../utils/toast";
 
-
 const STORAGE_KEY = "players";
 
 export default function usePlayers() {
@@ -53,6 +52,14 @@ export default function usePlayers() {
     );
   };
 
+  const validateSelection = () => {
+    if (selectedPlayers.length === 0) {
+      showError("You must select at least one player.");
+      return false;
+    }
+    return true;
+  };
+
   return {
     savedPlayers,
     selectedPlayers,
@@ -60,5 +67,6 @@ export default function usePlayers() {
     addPlayer,
     deletePlayer,
     setSelectedPlayers,
+    validateSelection,
   };
 }
