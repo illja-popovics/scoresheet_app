@@ -8,14 +8,14 @@ export default function useGameHistory() {
 
   useEffect(() => {
     const saved = load(STORAGE_KEY, []);
-    setHistory(saved.reverse());
+    setHistory(saved);
   }, []);
 
   const deleteHistoryItem = (index) => {
     const updated = [...history];
     updated.splice(index, 1);
-    save(STORAGE_KEY, [...updated].reverse()); // reverse before saving
     setHistory(updated);
+    save(STORAGE_KEY, updated);
   };
 
   return {
