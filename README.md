@@ -1,90 +1,51 @@
 https://illja-popovics.github.io/scoresheet_app/
 
-# 🎯 Score Tracker App
+# Score Tracker App
 
 A clean and responsive React app to create custom games, add players, and track scores over multiple rounds. Supports both **numbered** and **named** rounds. All data is stored in your browser using `localStorage`.
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🎮 Create and delete custom games
-- 🧑 Add, select, or remove players
-- 🔢 Numbered or 🏷️ Named round types
-- 📂 Save and persist scores locally
-- 📊 View complete game history
-- ✅ Responsive and mobile-friendly
-- 🔔 Toast notifications for actions
+- Create and delete custom games
+- Add, select, or remove players
+- Numbered or  Named round types (Named rounds can be saved as a template for each game)
+- Save and persist scores locally
+- View complete game history
+- Export and Import game history in .csv format
+
 
 ---
 
-## 📆 Installation
+## Installation
 
 ```bash
 git clone https://github.com/your-username/score-tracker.git
-cd score-tracker
 npm install
 npm start
 ```
 
 ---
 
-## 🧱 Project Structure
-
-```
-src/
-│
-├── components/
-│   ├── GameSelector/
-│   ├── PlayerSelector/
-│   ├── ScorePad/
-│   └── GameHistory/
-│
-├── hooks/
-│   ├── useGameFlow.js
-│   ├── useGameList.js
-│   ├── usePlayers.js
-│   └── useScorePad.js
-│
-├── utils/
-│   ├── storage.js
-│   └── toast.js
-│
-├── App.jsx
-└── index.js
-```
-
----
-
-## 🚰 Scripts
+## Scripts
 
 | Command          | Description                               |
 | ---------------- | ----------------------------------------- |
-| `npm start`      | Start development server                  |
-| `npm run build`  | Create production build                   |
+| `npm run dev`    | Create production build                   |
 | `npm run deploy` | Deploy via GitHub Pages _(if configured)_ |
 
 ---
 
-## 📂 Local Storage Keys
+## Customization Tips
 
-| Purpose      | Key Name      |
-| ------------ | ------------- |
-| Games        | `games`       |
-| Players      | `players`     |
-| Game History | `gameResults` |
+-  Update the `roundType` default in `useScorePad.js` if you'd prefer named rounds by default.
+-  Add tests with `React Testing Library` for future-proofing.
+-  Want cloud storage? Add Firebase or Supabase integration.
 
 ---
 
-## 📙 Customization Tips
-
-- ✏️ Update the `roundType` default in `useScorePad.js` if you'd prefer named rounds by default.
-- 🧪 Add tests with `React Testing Library` for future-proofing.
-- 🌐 Want cloud storage? Add Firebase or Supabase integration.
-
----
-
-## 🌐 Deployment (Optional)
+## Deployment (Optional)
 
 ```bash
 npm install gh-pages --save-dev
@@ -108,7 +69,7 @@ npm run deploy
 
 ---
 
-## 📄 License
+## License
 
 MIT – use it freely, modify as needed, and enjoy!
 
