@@ -56,12 +56,12 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
         : round
       ).every(cell => cell === "" || isNaN(cell))
     );
-
+  
     if (isEmpty) {
       showError("You must enter at least one score before saving.");
       return;
     }
-
+  
     const entry = {
       game: gameName,
       players,
@@ -70,11 +70,14 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
       roundType,
       date: new Date().toISOString(),
     };
-
+  
     const existing = load(STORAGE_KEY, []);
     save(STORAGE_KEY, [...existing, entry]);
     showSuccess("Game results saved!");
+  
+    window.dispatchEvent(new Event("gameHistoryUpdated"));
   };
+  
 
   return {
     rounds,
