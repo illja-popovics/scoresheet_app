@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { load, save } from "../utils/storage";
 import { saveTemplate, loadTemplate } from "../utils/gameTemplates";
 import { showError, showSuccess } from "../utils/toast";
+import { evaluateExpression } from "../utils/math";
 
 const STORAGE_KEY = "gameResults";
 
@@ -43,11 +44,13 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
 
   const updateScore = (roundIndex, playerIndex, value) => {
     const updated = [...rounds];
+  
     if (roundType === "named") {
-      updated[roundIndex].scores[playerIndex] = value === "" ? "" : parseInt(value);
+      updated[roundIndex].scores[playerIndex] = value;
     } else {
-      updated[roundIndex][playerIndex] = value === "" ? "" : parseInt(value);
+      updated[roundIndex][playerIndex] = value;
     }
+  
     setRounds(updated);
   };
 
@@ -61,9 +64,10 @@ export default function useScorePad(players, gameName, roundType = "numbered") {
   const totals = players.map((_, i) =>
     rounds.reduce((sum, round) => {
       const val = roundType === "named" ? round.scores[i] : round[i];
-      return sum + (typeof val === "number" ? val : 0);
+      const num = typeof val === "string" ? evaluateExpression(val) : val;
+      return sum + (typeof num === "number" && !isNaN(num) ? num : 0);
     }, 0)
-  );
+  );  
 
   const saveResults = () => {
     const isEmpty = rounds.every(round =>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import useScorePad from "../../hooks/useScorePad";
 import styles from "./ScorePad.module.css";
 
@@ -14,22 +14,43 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
     saveAsTemplate,
   } = useScorePad(players, game.name, roundType);
 
+  const inputRefs = useRef({});
+
   const renderScoreCells = (round, roundIndex) => {
     const scores = roundType === "named" ? round.scores : round;
 
-    return scores.map((score, playerIndex) => (
-      <td key={playerIndex}>
-        <input
-          type="number"
-          value={score}
-          placeholder="-"
-          onChange={(e) =>
-            updateScore(roundIndex, playerIndex, e.target.value)
-          }
-          className={styles.inputCell}
-        />
-      </td>
-    ));
+    return scores.map((score, playerIndex) => {
+      const inputKey = `${roundIndex}_${playerIndex}`;
+
+      return (
+        <td key={playerIndex}>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="\d*"
+            value={score}
+            placeholder="-"
+            ref={(el) => {
+              if (el) inputRefs.current[inputKey] = el;
+            }}
+            onChange={(e) =>
+              updateScore(roundIndex, playerIndex, e.target.value)
+            }
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addRound();
+                setTimeout(() => {
+                  const nextKey = `${roundIndex + 1}_0`;
+                  inputRefs.current[nextKey]?.focus();
+                }, 0);
+              }
+            }}
+            className={styles.inputCell}
+          />
+        </td>
+      );
+    });
   };
 
   return (
@@ -94,10 +115,10 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
           Add Round
         </button>
         {roundType === "named" && (
-  <button onClick={saveAsTemplate} className={styles.buttonSpacing}>
-    💾 Save Round Template
-  </button>
-)}
+          <button onClick={saveAsTemplate} className={styles.buttonSpacing}>
+            💾 Save Round Template
+          </button>
+        )}
 
         <button onClick={saveResults}>Save Game Results</button>
         <button
