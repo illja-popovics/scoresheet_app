@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import usePlayers from "../../hooks/usePlayers";
+import PlayerList from "../PlayerList/PlayerList";
+import RoundTypeSelector from "../RoundTypeSelector/RoundTypeSelector";
+import TextInput from "../ui/TextInput/TextInput";
+import PrimaryButton from "../ui/PrimaryButton/PrimaryButton";
+
 import styles from "./PlayerSelector.module.css";
 
 const PlayerSelector = ({ onConfirm, onBack }) => {
@@ -13,7 +18,7 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
   } = usePlayers();
 
   const [name, setName] = useState("");
-  const [photo, setPhoto] = useState("");
+  const [photo, setPhoto] = useState(""); // future use
   const [roundType, setRoundType] = useState("numbered");
 
   const handleAdd = () => {
@@ -31,74 +36,38 @@ const PlayerSelector = ({ onConfirm, onBack }) => {
     <div>
       <h2>Select or Add Players</h2>
 
-      <h4>Previously Used Players:</h4>
-      <ul className={styles.playerList}>
-        {savedPlayers.map((p, i) => (
-          <li key={i} className={styles.playerItem}>
-            <label>
-              <input
-                type="checkbox"
-                className={styles.checkbox}
-                checked={!!selectedPlayers.find((sel) => sel.name === p.name)}
-                onChange={() => toggleSelection(p)}
-              />
-              {p.name}
-            </label>
-            <button
-              onClick={() => {
-                if (window.confirm("Delete this player?")) deletePlayer(i);
-              }}
-              title="Delete Player"
-              className={styles.deleteButton}
-            >
-              🗑️
-            </button>
-          </li>
-        ))}
-      </ul>
+      <PlayerList
+        players={savedPlayers}
+        selected={selectedPlayers}
+        onToggle={toggleSelection}
+        onDelete={deletePlayer}
+      />
 
       <h4>Add New Player:</h4>
-      <input
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <button className={styles.addButton} onClick={handleAdd}>Add Player</button>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <TextInput
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <PrimaryButton className={styles.addButton} onClick={handleAdd}>Add Player</PrimaryButton>
+      </div>
 
       <hr />
 
-      <div>
-        <h4>Round Label Type:</h4>
-        <div className={styles.radioGroup}>
-          <label className={styles.radioLabel}>
-            <input
-              type="radio"
-              className={styles.radioInput}
-              value="numbered"
-              checked={roundType === "numbered"}
-              onChange={() => setRoundType("numbered")}
-            />
-            Numbered Rounds
-          </label>
-          <label className={styles.radioLabel}>
-            <input
-              type="radio"
-              className={styles.radioInput}
-              value="named"
-              checked={roundType === "named"}
-              onChange={() => setRoundType("named")}
-            />
-            Named Rounds
-          </label>
-        </div>
-      </div>
+      <RoundTypeSelector
+        selected={roundType}
+        onChange={setRoundType}
+      />
 
-      <button onClick={handleConfirm}>
-        Confirm Players
-      </button>
-      <button onClick={onBack} style={{ marginLeft: "10px" }}>
-        ⬅️ Back
-      </button>
+      <div style={{ marginTop: 16 }}>
+        <PrimaryButton onClick={handleConfirm}>
+          Confirm Players
+        </PrimaryButton>
+        <PrimaryButton onClick={onBack} style={{ marginLeft: 10 }}>
+          ⬅️ Back
+        </PrimaryButton>
+      </div>
     </div>
   );
 };
