@@ -1,27 +1,3 @@
-.gameList {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-.gameListItem {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start
-}
-
-.gameButton {
-    cursor: pointer;
-}
-
-.deleteButton {
-    margin-left: 10px;
-    color: red;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
 .addButton {
     margin-left: 20px;
 }

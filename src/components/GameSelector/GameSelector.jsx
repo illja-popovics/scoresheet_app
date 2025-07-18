@@ -3,7 +3,7 @@ import useGameList from "../../hooks/useGameList";
 import {
   exportAllTemplates,
   importTemplatesFromJSON,
-  loadTemplate,
+  // loadTemplate,
 } from "../../utils/gameTemplates";
 import { showSuccess, showError } from "../../utils/toast";
 
@@ -58,7 +58,7 @@ const GameSelector = ({ onSelect }) => {
       <hr style={{ margin: "20px 0" }} />
 
       <div>
-        <PrimaryButton onClick={exportAllTemplates}>📤 Export Games</PrimaryButton>
+        <PrimaryButton className={styles.addButton} onClick={exportAllTemplates}>📤 Export Games</PrimaryButton>
         <PrimaryButton onClick={() => fileInputRef.current.click()}>
           📥 Import Games
         </PrimaryButton>
