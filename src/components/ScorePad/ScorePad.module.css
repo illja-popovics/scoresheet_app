@@ -1,16 +1,3 @@
-.deleteButton {
-    margin-left: 6px;
-    color: red;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-size: 14px;
-}
-
-.inputCell {
-    width: 60px;
-}
-
 .controls {
     margin-top: 16px;
 }
@@ -24,6 +11,3 @@
     margin-top: 20px;
 }
 
-.roundNameInput {
-    width: 100px;
-}

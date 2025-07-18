@@ -1,5 +1,8 @@
 import React, { useRef } from "react";
 import useScorePad from "../../hooks/useScorePad";
+import RoundRow from "../RoundRow/RoundRow";
+import PrimaryButton from "../ui/PrimaryButton/PrimaryButton";
+
 import styles from "./ScorePad.module.css";
 
 const ScorePad = ({ game, players, roundType, onBack }) => {
@@ -16,43 +19,6 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
 
   const inputRefs = useRef({});
 
-  const renderScoreCells = (round, roundIndex) => {
-    const scores = roundType === "named" ? round.scores : round;
-
-    return scores.map((score, playerIndex) => {
-      const inputKey = `${roundIndex}_${playerIndex}`;
-
-      return (
-        <td key={playerIndex}>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="\d*"
-            value={score}
-            placeholder="-"
-            ref={(el) => {
-              if (el) inputRefs.current[inputKey] = el;
-            }}
-            onChange={(e) =>
-              updateScore(roundIndex, playerIndex, e.target.value)
-            }
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addRound();
-                setTimeout(() => {
-                  const nextKey = `${roundIndex + 1}_0`;
-                  inputRefs.current[nextKey]?.focus();
-                }, 0);
-              }
-            }}
-            className={styles.inputCell}
-          />
-        </td>
-      );
-    });
-  };
-
   return (
     <div>
       <h2>Game: {game.name}</h2>
@@ -67,74 +33,51 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
         </thead>
         <tbody>
           {rounds.map((round, roundIndex) => (
-            <tr key={roundIndex}>
-              <td>
-                {roundType === "named" ? (
-                  <input
-                    type="text"
-                    value={round.name}
-                    onChange={(e) =>
-                      updateRoundName(roundIndex, e.target.value)
-                    }
-                    placeholder={`Round ${roundIndex + 1}`}
-                    className={styles.roundNameInput}
-                  />
-                ) : (
-                  roundIndex + 1
-                )}
-                <button
-                  onClick={() => {
-                    if (window.confirm("Delete this round?")) {
-                      deleteRound(roundIndex);
-                    }
-                  }}
-                  title="Delete round"
-                  className={styles.deleteButton}
-                >
-                  ❌
-                </button>
-              </td>
-              {renderScoreCells(round, roundIndex)}
-            </tr>
+            <RoundRow
+              key={roundIndex}
+              round={round}
+              roundIndex={roundIndex}
+              roundType={roundType}
+              players={players}
+              updateScore={updateScore}
+              updateRoundName={updateRoundName}
+              deleteRound={deleteRound}
+              inputRefs={inputRefs}
+              addRound={addRound}
+            />
           ))}
           <tr>
-            <td>
-              <strong>Total</strong>
-            </td>
+            <td><strong>Total</strong></td>
             {totals.map((t, i) => (
-              <td key={i}>
-                <strong>{t}</strong>
-              </td>
+              <td key={i}><strong>{t}</strong></td>
             ))}
           </tr>
         </tbody>
       </table>
 
       <div className={styles.controls}>
-        <button onClick={addRound} className={styles.buttonSpacing}>
-          Add Round
-        </button>
+        <PrimaryButton onClick={addRound}>➕ Add Round</PrimaryButton>
+
         {roundType === "named" && (
-          <button onClick={saveAsTemplate} className={styles.buttonSpacing}>
+          <PrimaryButton onClick={saveAsTemplate}>
             💾 Save Round Template
-          </button>
+          </PrimaryButton>
         )}
 
-        <button onClick={saveResults}>Save Game Results</button>
-        <button
+        <PrimaryButton onClick={saveResults}>✅ Save Game Results</PrimaryButton>
+
+        <PrimaryButton
+          className={styles.backButton}
           onClick={() => {
             if (
-              window.confirm(
-                "Are you sure you want to go back? Unsaved scores will be lost."
-              )
+              window.confirm("Are you sure you want to go back? Unsaved scores will be lost.")
             ) {
               onBack();
             }
           }}
-          className={styles.backButton}
         >
           ⬅️ Back
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   );
