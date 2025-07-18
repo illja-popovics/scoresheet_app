@@ -7,8 +7,13 @@ const STORAGE_KEY = "games";
 export default function useGameList() {
   const [games, setGames] = useState([]);
 
+  const reloadGames = () => {
+    const loaded = load(STORAGE_KEY, []);
+    setGames(Array.isArray(loaded) ? loaded : []);
+  };
+
   useEffect(() => {
-    setGames(load(STORAGE_KEY));
+    reloadGames();
   }, []);
 
   const addGame = (name) => {
@@ -42,9 +47,17 @@ export default function useGameList() {
     showSuccess(`Game "${removed.name}" deleted.`);
   };
 
+  // Optional: allow manual update from outside
+  const setGamesManually = (newGames) => {
+    save(STORAGE_KEY, newGames);
+    setGames(newGames);
+  };
+
   return {
     games,
     addGame,
     deleteGame,
+    reloadGames,
+    setGamesManually,
   };
 }
