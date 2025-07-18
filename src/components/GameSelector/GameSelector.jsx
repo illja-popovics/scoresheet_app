@@ -41,8 +41,9 @@ const GameSelector = ({ onSelect }) => {
       <h2>Select or Create a Game</h2>
       <ul className={styles.gameList}>
         {games.map((g, i) => {
-          const hasTemplate = !!loadTemplate(g.name);
-
+          const template = loadTemplate(g.name);
+          const hasTemplate = Array.isArray(template) && template.length > 0;
+          
           return (
             <li key={i} className={styles.gameListItem}>
               <button
@@ -80,8 +81,8 @@ const GameSelector = ({ onSelect }) => {
       <hr style={{ margin: "20px 0" }} />
 
       <div>
-        <button onClick={exportAllTemplates}>📤 Export Templates</button>
-        <button onClick={() => fileInputRef.current.click()}>📥 Import Templates</button>
+        <button onClick={exportAllTemplates}>📤 Export Games</button>
+        <button onClick={() => fileInputRef.current.click()}>📥 Import Games</button>
         <input
           type="file"
           accept=".json"
