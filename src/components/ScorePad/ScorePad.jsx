@@ -25,29 +25,30 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
       return (
         <td key={playerIndex}>
           <input
-            type="text"
-            inputMode="decimal"
-            pattern="-?\d*"
-            value={score}
-            placeholder="-"
-            ref={(el) => {
-              if (el) inputRefs.current[inputKey] = el;
-            }}
-            onChange={(e) =>
-              updateScore(roundIndex, playerIndex, e.target.value)
-            }
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addRound();
-                setTimeout(() => {
-                  const nextKey = `${roundIndex + 1}_0`;
-                  inputRefs.current[nextKey]?.focus();
-                }, 0);
-              }
-            }}
-            className={styles.inputCell}
-          />
+  type="tel"
+  inputMode="numeric"
+  pattern="^-?\d*\.?\d*$"
+  value={score}
+  placeholder="-"
+  ref={(el) => {
+    if (el) inputRefs.current[inputKey] = el;
+  }}
+  onChange={(e) =>
+    updateScore(roundIndex, playerIndex, e.target.value)
+  }
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addRound();
+      setTimeout(() => {
+        const nextKey = `${roundIndex + 1}_0`;
+        inputRefs.current[nextKey]?.focus();
+      }, 0);
+    }
+  }}
+  className={styles.inputCell}
+/>
+
         </td>
       );
     });
