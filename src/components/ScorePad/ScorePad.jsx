@@ -26,8 +26,8 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
         <td key={playerIndex}>
           <input
             type="text"
-            inputMode="numeric"
-            pattern="\d*"
+            inputMode="decimal"
+            pattern="-?\d*"
             value={score}
             placeholder="-"
             ref={(el) => {
