@@ -25,9 +25,8 @@ const ScorePad = ({ game, players, roundType, onBack }) => {
       return (
         <td key={playerIndex}>
           <input
-  type="tel"
-  inputMode="numeric"
-  pattern="^-?\d*\.?\d*$"
+  // type="tel"
+  pattern="^-?[0-9]*\.?[0-9]*$"
   value={score}
   placeholder="-"
   ref={(el) => {
